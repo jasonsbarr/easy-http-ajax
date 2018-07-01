@@ -195,18 +195,6 @@
                 callback: params.callback,
                 error: error
             });
-
-            // xhr.open('DELETE', url, true);
-        
-            // xhr.onload = function() {
-            //     if (xhr.status === 200) {
-            //         callback(xhr.responseText);
-            //     } else {
-            //         callback(null, `Error: ${xhr.status}`)
-            //     }
-            // }
-        
-            // xhr.send();
         },
 
         /**
