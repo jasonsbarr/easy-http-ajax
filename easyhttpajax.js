@@ -4,7 +4,7 @@
  * 
  * @file API functions library
  * @author Jason Barr
- * @version 0.1
+ * @version 0.3
  * @license MIT
  */
 
