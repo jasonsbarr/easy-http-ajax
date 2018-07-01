@@ -20,6 +20,15 @@ Convenience methods pass a params object to EasyHTTPAjax.ajax(), which handles t
 
 The .ajax() method is also public if convenience methods aren't sufficient, though functionality is currently limited at this point.
 
+## Installation
+Currently the only method of installation is to include the source file in your project, e.g.:
+
+```html
+<script src="src/easyhttpajax.js"></script>
+```
+
+If you're using a task runner like Grunt or Gulp you can include the file in your scripts path so it's compiled into your application.
+
 ## Example
 
 ```js
