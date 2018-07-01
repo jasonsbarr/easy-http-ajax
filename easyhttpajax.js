@@ -1,6 +1,6 @@
 /**
  * A simple wrapper API for XMLHttpRequest to make asynchronous 
- * HTTP requests of different types
+ * HTTP requests of different types to handle JSON data
  * 
  * @file API functions library
  * @author Jason Barr
@@ -54,7 +54,15 @@ EasyHTTP.prototype.get = function(url, callback) {
  * @param {requestCallback} callback
  */
 EasyHTTP.prototype.post = function(url, data, callback) {
+    let self = this;
+    this.http.open('POST', url, true);
+    this.http.setRequestHeader('Content-Type', 'application/json');
 
+    this.http.onload = function() {
+        callback(self.http.responseText);
+    }
+
+    this.send(JSON.stringify(data));
 }
 
 /**
