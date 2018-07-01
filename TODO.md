@@ -3,4 +3,6 @@
 - Clean up documentation
 - ~Create README~
 - Create tests
-- Beef up error handling
+- Beef up error handling so it's actually useful
+- Process data for formats other than JSON
+- Add JSON-specific helper methods
