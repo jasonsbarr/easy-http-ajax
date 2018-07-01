@@ -37,6 +37,6 @@ http.get({
 });
 ```
 
-See [here](https://github.com/jasonsbarr/easy-http-ajax/blob/fb6a0e02ff4d456829c48204cee245e9d24e6a9e/easyhttpajax.js#L212-L223) for allowable params to .ajax()
+See [here](https://github.com/jasonsbarr/easy-http-ajax/blob/64720e13f7abf5eca9b5d682396e5a5245e100a2/src/easyhttpajax.js#L200-L211) for allowable params to .ajax()
 
 Thanks to the [jQuery](https://jquery.com) team for the idea to pass params through an .ajax() method.
