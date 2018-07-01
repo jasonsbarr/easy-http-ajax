@@ -3,7 +3,6 @@
  * HTTP requests of different types
  * 
  * @file API functions library
- * @namespace EasyHTTPAjax
  * @author Jason Barr
  * @version 0.1
  * @license MIT
@@ -65,6 +64,10 @@
     }
 
     const EasyHTTPAjax = {
+        /**
+         * @namespace EasyHTTPAjax
+         * @alias EasyHTTP
+         */
         
         /**
          * Makes HTTP GET request
@@ -156,7 +159,7 @@
                 error('No data provided!');
                 return;
             }
-            
+
             // Pass params to this.ajax()
             this.ajax({
                 method: 'PUT',
@@ -177,22 +180,33 @@
          * Makes HTTP DELETE request
          * 
          * @since 0.1
-         * @param {string} url
-         * @param {deleteResponseCallback} callback Callback function to handle data response
+         * @param {Object} params
+         * @param {string} params.url
+         * @param {deleteResponseCallback} params.callback Callback function to handle data response
          */
-        delete: function(url, callback) {
+        delete: function(params) {
+            // Set error handler
+            let error = params.error || processError;
+
+            // Pass params to this.ajax()
+            this.ajax({
+                method: 'DELETE',
+                url: params.url,
+                callback: params.callback,
+                error: error
+            });
+
+            // xhr.open('DELETE', url, true);
         
-            xhr.open('DELETE', url, true);
+            // xhr.onload = function() {
+            //     if (xhr.status === 200) {
+            //         callback(xhr.responseText);
+            //     } else {
+            //         callback(null, `Error: ${xhr.status}`)
+            //     }
+            // }
         
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    callback(xhr.responseText);
-                } else {
-                    callback(null, `Error: ${xhr.status}`)
-                }
-            }
-        
-            xhr.send();
+            // xhr.send();
         },
 
         /**
@@ -224,11 +238,6 @@
             if (params.method === 'POST' || params.method === 'PUT') {
                 let type = params.contentType || 'application/json'
                 xhr.setRequestHeader('Content-Type', type)
-
-                if (params.data === undefined) {
-                    error('No data specified');
-                    return;
-                }
 
                 xhr.send(prepareData(params.data, type));
             } else {
