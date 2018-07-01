@@ -19,8 +19,16 @@
      */
     xhr = new XMLHttpRequest();
 
+    /**
+     * Check if data has been passed into method
+     * 
+     * @private
+     * @since 0.3
+     * @param {Object} data 
+     * @returns {boolean}
+     */
     function isData(data) {
-        if (data !== undefined && data !== null && data !== {}) {
+        if (data != undefined) {
             return true;
         }
 
@@ -40,10 +48,12 @@
         if (contentType === 'application/json') {
             return JSON.stringify(data);
         }
+
+        return data;
     }
 
     /**
-     * Default error function if no callback provided
+     * Default error function if none provided
      * 
      * @private
      * @since 0.3
@@ -105,21 +115,11 @@
         post: function(params) {
             // Set error handler
             let error = params.error || processError;
-
-            // Check if data exists and is not null
+            // Check if data exists
             if (!isData(params.data)) {
                 error('No data provided!');
                 return;
             }
-
-            // xhr.open('POST', url, true);
-            // xhr.setRequestHeader('Content-Type', 'application/json');
-        
-            // xhr.onload = function() {
-            //     callback(xhr.responseText);
-            // }
-        
-            // xhr.send(JSON.stringify(data));
 
             // Pass params to this.ajax()
             this.ajax({
@@ -202,10 +202,10 @@
 
             // Process response
             xhr.onload = function() {
-                if (xhr.status === 200) {
+                if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202) {
                     params.callback(xhr.responseText);
                 } else {
-                    error(`Error: ${xhr.status}`)
+                    params.error(`Error: ${xhr.status}`)
                 }
             }
             
