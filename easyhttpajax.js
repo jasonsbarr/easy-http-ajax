@@ -48,8 +48,12 @@ EasyHTTP.prototype.get = function(url, callback) {
 
 /**
  * Makes HTTP POST request
+ * 
+ * @param {string} url
+ * @param {Object} data
+ * @param {requestCallback} callback
  */
-EasyHTTP.prototype.post = function() {
+EasyHTTP.prototype.post = function(url, data, callback) {
 
 }
 
