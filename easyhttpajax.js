@@ -19,6 +19,14 @@
      */
     xhr = new XMLHttpRequest();
 
+    function isData(data) {
+        if (data !== undefined && data !== null && data !== {}) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Prepare data object for POST and PUT requests to match required Content-Type
      * 
@@ -52,27 +60,20 @@
          * Makes HTTP GET request
          * 
          * @since 0.1
-         * @param {string} url
-         * @param {getResponseCallback} callback Callback function to handle data response
+         * @param {Object} params
+         * @param {string} params.url
+         * @param {getResponseCallback} params.callback Callback function to handle data response
+         * @param {getErrorCallback} [params.error] Handle error response
          */
-        get: function(url, callback, error) {
-        
-            // xhr.open('GET', url, true);
-        
-            // xhr.onload = function() {
-            //     if (xhr.status === 200) {
-            //         callback(xhr.responseText);
-            //     } else {
-            //         callback(null, `Error: ${xhr.status}`)
-            //     }
-            // }
-        
-            // xhr.send();
+        get: function(params) {
+            // Set error handler
+            let error = params.error || processError;
 
+            // Pass params to this.ajax()
             this.ajax({
                 method: 'GET',
-                url: url,
-                callback: callback,
+                url: params.url,
+                callback: params.callback,
                 error: error
             });
         },
@@ -81,26 +82,54 @@
          * 
          * @callback getResponseCallback
          * @param {string} responseText HTTP Request response text
-         * @param {string} [errorMessage] Error message HTTP status
+         */
+
+         /**
+         * Error callback requirements for EasyHTTP.get()
+         * 
+         * @callback getErrorCallback
+         * @param {string} errorMessage Error message HTTP status
          */
         
         /**
          * Makes HTTP POST request
          * 
          * @since 0.1
-         * @param {string} url
-         * @param {Object} data
-         * @param {postRequestCallback} callback
+         * @param {Object} params
+         * @param {string} params.url
+         * @param {Object} params.data
+         * @param {postRequestCallback} params.callback
+         * @param {postErrorCallback} [params.error]
+         * @param {string} [params.contentType=application/json] Set value for Content-Type header
          */
-        post: function(url, data, callback, error, dataType) {
-            xhr.open('POST', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-        
-            xhr.onload = function() {
-                callback(xhr.responseText);
+        post: function(params) {
+            // Set error handler
+            let error = params.error || processError;
+
+            // Check if data exists and is not null
+            if (!isData(params.data)) {
+                error('No data provided!');
+                return;
             }
+
+            // xhr.open('POST', url, true);
+            // xhr.setRequestHeader('Content-Type', 'application/json');
         
-            xhr.send(JSON.stringify(data));
+            // xhr.onload = function() {
+            //     callback(xhr.responseText);
+            // }
+        
+            // xhr.send(JSON.stringify(data));
+
+            // Pass params to this.ajax()
+            this.ajax({
+                method: 'POST',
+                url: params.url,
+                data: params.data,
+                callback: params.callback,
+                error: error,
+                contentType: params.contentType
+            });
         },
         /**
          * POST request callback requirements for EasyHTTP.post()
@@ -167,7 +196,6 @@
          * @param {string} [params.contentType=application/json] Content type header value for data being sent
          */
         ajax: function(params) {
-            let error = params.error || processError;
             
             // Open AJAX connection
             xhr.open(params.method, params.url, true);
@@ -181,20 +209,19 @@
                 }
             }
             
-            // if (params.method === 'POST' || params.method === 'PUT') {
-            //     let type = params.contentType || 'application/json'
-            //     xhr.setRequestHeader('Content-Type', type)
+            if (params.method === 'POST' || params.method === 'PUT') {
+                let type = params.contentType || 'application/json'
+                xhr.setRequestHeader('Content-Type', type)
 
-            //     if (params.data === undefined) {
-            //         error('No data specified');
-            //         return;
-            //     }
+                if (params.data === undefined) {
+                    error('No data specified');
+                    return;
+                }
 
-            //     xhr.send(prepareData(params.data, type));
-            // } else {
-            //     xhr.send();
-            // }
-            xhr.send();
+                xhr.send(prepareData(params.data, type));
+            } else {
+                xhr.send();
+            }
         }
     }
 
