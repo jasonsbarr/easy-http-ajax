@@ -141,19 +141,31 @@
          * Makes HTTP PUT request
          * 
          * @since 0.1
-         * @param {string} url
-         * @param {Object} data
-         * @param {postRequestCallback} callback
+         * @param {Object} params
+         * @param {string} params.url
+         * @param {Object} params.data
+         * @param {postRequestCallback} params.callback
+         * @param {postErrorCallback} [params.error]
+         * @param {string} [params.contentType=application/json] Set value for Content-Type header
          */
-        put: function(url, data, callback) {
-            xhr.open('PUT', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-        
-            xhr.onload = function() {
-                callback(xhr.responseText);
+        put: function(params) {
+            // Set error handler
+            let error = params.error || processError;
+            // Check if data exists
+            if (!isData(params.data)) {
+                error('No data provided!');
+                return;
             }
-        
-            xhr.send(JSON.stringify(data));
+            
+            // Pass params to this.ajax()
+            this.ajax({
+                method: 'PUT',
+                url: params.url,
+                data: params.data,
+                callback: params.callback,
+                error: error,
+                contentType: params.contentType
+            });
         },
         /**
          * PUT request callback requirements for EasyHTTP.put()
