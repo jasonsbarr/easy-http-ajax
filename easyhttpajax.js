@@ -1,6 +1,6 @@
 /**
  * A simple wrapper API for XMLHttpRequest to make asynchronous 
- * HTTP requests of different types to handle JSON data
+ * HTTP requests of different types
  * 
  * @file API functions library
  * @namespace EasyHTTPAjax
@@ -19,28 +19,62 @@
      */
     xhr = new XMLHttpRequest();
 
+    /**
+     * Prepare data object for POST and PUT requests to match required Content-Type
+     * 
+     * @private
+     * @since 0.3
+     * @param {Object} data 
+     * @param {string} contentType 
+     * @returns {string}
+     */
+    function prepareData(data, contentType) {
+        if (contentType === 'application/json') {
+            return JSON.stringify(data);
+        }
+    }
+
+    /**
+     * Default error function if no callback provided
+     * 
+     * @private
+     * @since 0.3
+     * @param {string} errorMsg 
+     * @returns string
+     */
+    function processError(errorMsg) {
+        return errorMsg;
+    }
+
     const EasyHTTPAjax = {
         
         /**
          * Makes HTTP GET request
          * 
+         * @since 0.1
          * @param {string} url
          * @param {getResponseCallback} callback Callback function to handle data response
-         * @since 0.1
          */
-        get: function(url, callback) {
+        get: function(url, callback, error) {
         
-            xhr.open('GET', url, true);
+            // xhr.open('GET', url, true);
         
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    callback(xhr.responseText);
-                } else {
-                    callback(null, `Error: ${xhr.status}`)
-                }
-            }
+            // xhr.onload = function() {
+            //     if (xhr.status === 200) {
+            //         callback(xhr.responseText);
+            //     } else {
+            //         callback(null, `Error: ${xhr.status}`)
+            //     }
+            // }
         
-            xhr.send();
+            // xhr.send();
+
+            this.ajax({
+                method: 'GET',
+                url: url,
+                callback: callback,
+                error: error
+            });
         },
         /**
          * Response callback requirements for EasyHTTP.get()
@@ -53,12 +87,12 @@
         /**
          * Makes HTTP POST request
          * 
+         * @since 0.1
          * @param {string} url
          * @param {Object} data
          * @param {postRequestCallback} callback
-         * @since 0.1
          */
-        post: function(url, data, callback) {
+        post: function(url, data, callback, error, dataType) {
             xhr.open('POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
         
@@ -75,12 +109,12 @@
          */
         
         /**
-         * Makes HTTP POST request
+         * Makes HTTP PUT request
          * 
+         * @since 0.1
          * @param {string} url
          * @param {Object} data
          * @param {postRequestCallback} callback
-         * @since 0.1
          */
         put: function(url, data, callback) {
             xhr.open('PUT', url, true);
@@ -101,9 +135,9 @@
         /**
          * Makes HTTP DELETE request
          * 
+         * @since 0.1
          * @param {string} url
          * @param {deleteResponseCallback} callback Callback function to handle data response
-         * @since 0.1
          */
         delete: function(url, callback) {
         
@@ -117,6 +151,49 @@
                 }
             }
         
+            xhr.send();
+        },
+
+        /**
+         * Backend Ajax handler for convenience methods
+         * 
+         * @since 0.3
+         * @param {Object} params Object to instantiate Ajax call
+         * @param {string} params.method The HTTP method of the request
+         * @param {string} params.url The URL being queried
+         * @param {responseCallback} params.callback Callback to process on response
+         * @param {errorCallback} [params.error] Callback to process on error
+         * @param {Object} [params.data] Data to process - required for POST and PUT
+         * @param {string} [params.contentType=application/json] Content type header value for data being sent
+         */
+        ajax: function(params) {
+            let error = params.error || processError;
+            
+            // Open AJAX connection
+            xhr.open(params.method, params.url, true);
+
+            // Process response
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    params.callback(xhr.responseText);
+                } else {
+                    error(`Error: ${xhr.status}`)
+                }
+            }
+            
+            // if (params.method === 'POST' || params.method === 'PUT') {
+            //     let type = params.contentType || 'application/json'
+            //     xhr.setRequestHeader('Content-Type', type)
+
+            //     if (params.data === undefined) {
+            //         error('No data specified');
+            //         return;
+            //     }
+
+            //     xhr.send(prepareData(params.data, type));
+            // } else {
+            //     xhr.send();
+            // }
             xhr.send();
         }
     }
