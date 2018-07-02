@@ -3,7 +3,7 @@
  * HTTP requests of different types
  * 
  * @file API functions library
- * @author Jason Barr
+ * @author Jason Barr <jason@jasonsbarr.com>
  * @version 0.3
  * @license MIT
  */
