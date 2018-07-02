@@ -39,6 +39,6 @@ http.get({
 });
 ```
 
-See [here](https://github.com/jasonsbarr/easy-http-ajax/blob/64720e13f7abf5eca9b5d682396e5a5245e100a2/src/easyhttpajax.js#L200-L211) for allowable params to .send()
+See [here](https://github.com/jasonsbarr/easy-http-ajax/blob/81c3cc033254e62154ec7600d1d6d6a76603286d/src/easyhttpajax.js#L199-L210) for allowable params to .send()
 
 Thanks to the [jQuery](https://jquery.com) team for the idea to pass params through a backend method.
