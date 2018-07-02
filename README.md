@@ -1,4 +1,4 @@
-# EasyHTTPAjax
+# EasyHTTP Ajax
 
 A simple vanilla JavaScript library to abstract HTTP methods to a common API.
 
