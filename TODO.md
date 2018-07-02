@@ -1,4 +1,5 @@
 # TODO for EasyHTTPAjax.js
+- Update .ajax() method name to .send() to match public API of Fetch version
 - Return public object instead of defining alias in IIFE
 - Clean up documentation
 - ~Create README~
