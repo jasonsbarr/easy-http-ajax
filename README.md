@@ -37,15 +37,20 @@ If you're using a task runner like Grunt or Gulp you can include the file in you
 let http = EasyHTTP;
 
 // Get posts from external API
-http.get({
-  url: 'https://api.example.com/posts',
-  callback: function(posts) {
-    // code to process posts response
-  },
-  error: function(err) {
-    // code to process error message
+try {
+  http.get({
+    url: 'https://api.example.com/posts',
+    callback: function(posts) {
+      // code to process posts response
+    }
+  });
+} catch (e) {
+  if (e instanceof HTTPError) {
+    // Handle HTTPError
+  } else {
+    // Handle other error(s)
   }
-});
+}
 ```
 
 See [here](https://github.com/jasonsbarr/easy-http-ajax/blob/ad45668dd06f308754ad5361da2f83b1ffed187a/src/easyhttpajax.js#L223-L234) for allowable params to .send()
