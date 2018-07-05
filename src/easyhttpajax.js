@@ -4,7 +4,7 @@
  * 
  * @file API functions library
  * @author Jason Barr <jason@jasonsbarr.com>
- * @version 0.4.1
+ * @version 0.5
  * @license MIT
  */
 
@@ -54,7 +54,7 @@
     /**
      * HTTP Error to be handled by user
      * 
-     * @since 0.4.1
+     * @since 0.5
      * @constructor
      * @extends Error
      * @param {string} errorMessage
@@ -71,7 +71,7 @@
     /**
      * Error - Lacks required input data/data is malformed, to be handled by user
      * 
-     * @since 0.4.1
+     * @since 0.5
      * @constructor
      * @extends Error
      * @param {string} errorMessage
