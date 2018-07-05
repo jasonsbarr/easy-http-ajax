@@ -40,7 +40,7 @@ let http = EasyHTTP;
 try {
   http.get({
     url: 'https://api.example.com/posts',
-    callback: function(posts) {
+    success: function(posts) {
       // code to process posts response
     }
   });
