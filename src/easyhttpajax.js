@@ -1,6 +1,6 @@
 /**
  * A simple wrapper API for XMLHttpRequest to make asynchronous 
- * HTTP requests of different types
+ * HTTP requests of different types. Should be compatible with IE 9+.
  * 
  * @file API functions library
  * @author Jason Barr <jason@jasonsbarr.com>

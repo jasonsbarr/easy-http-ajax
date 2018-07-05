@@ -2,7 +2,7 @@
 
 A simple vanilla JavaScript library to abstract HTTP methods to a common API.
 
-Uses XMLHttpRequest to process requests and responses.
+Uses XMLHttpRequest to process requests and responses. Doesn't use ES6+ syntax, so it should be compatible with IE 9+.
 
 If you don't need to support Internet Explorer and/or you can use Babel you should probably [check out the Fetch version](https://github.com/jasonsbarr/easy-http-fetch)
 
@@ -48,6 +48,6 @@ http.get({
 });
 ```
 
-See [here](https://github.com/jasonsbarr/easy-http-ajax/blob/81c3cc033254e62154ec7600d1d6d6a76603286d/src/easyhttpajax.js#L199-L210) for allowable params to .send()
+See [here](https://github.com/jasonsbarr/easy-http-ajax/blob/ad45668dd06f308754ad5361da2f83b1ffed187a/src/easyhttpajax.js#L223-L234) for allowable params to .send()
 
 Thanks to the [jQuery](https://jquery.com) team for the idea to pass params through a backend method.
