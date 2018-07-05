@@ -3,7 +3,7 @@
  * HTTP requests of different types
  * 
  * @file API functions library
- * @author Jason Barr
+ * @author Jason Barr <jason@jasonsbarr.com>
  * @version 0.3
  * @license MIT
  */
@@ -63,10 +63,9 @@
         return errorMsg;
     }
 
-    const EasyHTTPAjax = {
+    const EasyHTTP = {
         /**
-         * @namespace EasyHTTPAjax
-         * @alias EasyHTTP
+         * @namespace EasyHTTP
          */
         
         /**
@@ -82,8 +81,8 @@
             // Set error handler
             let error = params.error || processError;
 
-            // Pass params to this.ajax()
-            this.ajax({
+            // Pass params to this.send()
+            this.send({
                 method: 'GET',
                 url: params.url,
                 callback: params.callback,
@@ -124,8 +123,8 @@
                 return;
             }
 
-            // Pass params to this.ajax()
-            this.ajax({
+            // Pass params to this.send()
+            this.send({
                 method: 'POST',
                 url: params.url,
                 data: params.data,
@@ -160,8 +159,8 @@
                 return;
             }
 
-            // Pass params to this.ajax()
-            this.ajax({
+            // Pass params to this.send()
+            this.send({
                 method: 'PUT',
                 url: params.url,
                 data: params.data,
@@ -188,8 +187,8 @@
             // Set error handler
             let error = params.error || processError;
 
-            // Pass params to this.ajax()
-            this.ajax({
+            // Pass params to this.send()
+            this.send({
                 method: 'DELETE',
                 url: params.url,
                 callback: params.callback,
@@ -209,7 +208,7 @@
          * @param {Object} [params.data] Data to process - required for POST and PUT
          * @param {string} [params.contentType=application/json] Content type header value for data being sent
          */
-        ajax: function(params) {
+        send: function(params) {
             
             // Open AJAX connection
             xhr.open(params.method, params.url, true);
@@ -234,5 +233,5 @@
         }
     }
 
-    window.EasyHTTP = EasyHTTPAjax;
+    window.EasyHTTP = EasyHTTP;
 })(window);
