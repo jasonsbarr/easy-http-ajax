@@ -4,7 +4,7 @@
  * 
  * @file API functions library
  * @author Jason Barr <jason@jasonsbarr.com>
- * @version 0.3
+ * @version 0.4.1
  * @license MIT
  */
 
@@ -52,16 +52,21 @@
     }
 
     /**
-     * Default error function if none provided
+     * HTTP Error to be handled by user-provided error callback
      * 
-     * @private
-     * @since 0.3
-     * @param {string} errorMsg 
-     * @returns string
+     * @since 0.4.1
+     * @constructor
+     * @extends Error
+     * @param {string} errorMessage
      */
-    function processError(errorMsg) {
-        return errorMsg;
+    function HTTPError(errorMessage) {
+        this.name = 'HTTPError';
+        this.message = errorMessage;
     }
+
+    HTTPError.prototype = Object.create(Error.prototype);
+    HTTPError.prototype.constructor = HTTPError;
+    HTTPError.prototype.name = 'HTTPError',
 
     const EasyHTTP = {
         /**
@@ -74,25 +79,22 @@
          * @since 0.1
          * @param {Object} params
          * @param {string} params.url
-         * @param {getResponseCallback} params.callback Callback function to handle data response
-         * @param {getErrorCallback} [params.error] Handle error response
+         * @param {getSuccessCallback} params.success Success function to handle data response
+         * @param {getErrorCallback} params.error Handle error response
          */
         get: function(params) {
-            // Set error handler
-            let error = params.error || processError;
-
             // Pass params to this.send()
             this.send({
                 method: 'GET',
                 url: params.url,
-                callback: params.callback,
-                error: error
+                success: params.success,
+                error: params.error
             });
         },
         /**
-         * Response callback requirements for EasyHTTP.get()
+         * Success callback requirements for EasyHTTP.get()
          * 
-         * @callback getResponseCallback
+         * @callback getSuccessCallback
          * @param {string} responseText HTTP Request response text
          */
 
@@ -100,7 +102,7 @@
          * Error callback requirements for EasyHTTP.get()
          * 
          * @callback getErrorCallback
-         * @param {string} errorMessage Error message HTTP status
+         * @param {HTTPError} error HTTP status Error
          */
         
         /**
@@ -110,16 +112,14 @@
          * @param {Object} params
          * @param {string} params.url
          * @param {Object} params.data
-         * @param {postRequestCallback} params.callback
-         * @param {postErrorCallback} [params.error]
+         * @param {postRequestSuccess} params.success Handle success response
+         * @param {postErrorCallback} params.error Handle error response
          * @param {string} [params.contentType=application/json] Set value for Content-Type header
          */
         post: function(params) {
-            // Set error handler
-            let error = params.error || processError;
             // Check if data exists
             if (!isData(params.data)) {
-                error('No data provided!');
+                params.error(throw new Error('No data provided!'));
                 return;
             }
 
@@ -128,16 +128,23 @@
                 method: 'POST',
                 url: params.url,
                 data: params.data,
-                callback: params.callback,
-                error: error,
+                success: params.success,
+                error: params.error,
                 contentType: params.contentType
             });
         },
         /**
          * POST request callback requirements for EasyHTTP.post()
-         * @callback postRequestCallback
+         * @callback postSuccessCallback
          * @param {string} responseText HTTP response text
          */
+
+        /**
+         * Error callback requirements for EasyHTTP.post()
+         * 
+         * @callback postErrorCallback
+         * @param {HTTPError|Error} error 
+         */ 
         
         /**
          * Makes HTTP PUT request
@@ -146,16 +153,14 @@
          * @param {Object} params
          * @param {string} params.url
          * @param {Object} params.data
-         * @param {postRequestCallback} params.callback
-         * @param {postErrorCallback} [params.error]
+         * @param {postSuccessCallback} params.success
+         * @param {postErrorCallback} params.error
          * @param {string} [params.contentType=application/json] Set value for Content-Type header
          */
         put: function(params) {
-            // Set error handler
-            let error = params.error || processError;
             // Check if data exists
             if (!isData(params.data)) {
-                error('No data provided!');
+                params.error(throw new Error('No data provided!'));
                 return;
             }
 
@@ -164,16 +169,24 @@
                 method: 'PUT',
                 url: params.url,
                 data: params.data,
-                callback: params.callback,
-                error: error,
+                success: params.success,
+                error: params.error,
                 contentType: params.contentType
             });
         },
         /**
-         * PUT request callback requirements for EasyHTTP.put()
-         * @callback putRequestCallback
+         * PUT request success callback requirements for EasyHTTP.put()
+         * @callback putSuccessCallback
          * @param {string} responseText HTTP response text
          */
+
+        /**
+         * Error callback requirements for EasyHTTP.put()
+         * 
+         * @callback putErrorCallback
+         * @param {HTTPError|Error} error 
+         */ 
+        
         
         /**
          * Makes HTTP DELETE request
@@ -181,20 +194,31 @@
          * @since 0.1
          * @param {Object} params
          * @param {string} params.url
-         * @param {deleteResponseCallback} params.callback Callback function to handle data response
+         * @param {deleteSuccessCallback} params.success Callback function to handle success response
+         * @param {deleteErrorCallback} params.error Callback function to handle error
          */
         delete: function(params) {
-            // Set error handler
-            let error = params.error || processError;
-
             // Pass params to this.send()
             this.send({
                 method: 'DELETE',
                 url: params.url,
-                callback: params.callback,
-                error: error
+                success: params.success,
+                error: params.error
             });
         },
+        /**
+         * DELETE request callback requirements for EasyHTTP.delete()
+         * @callback deleteSuccessCallback
+         * @param {string} responseText HTTP response
+         */
+
+        /**
+         * Error callback requirements for EasyHTTP.delete()
+         * 
+         * @callback deleteErrorCallback
+         * @param {HTTPError} error
+         */
+
 
         /**
          * Backend Ajax handler for convenience methods
@@ -203,8 +227,8 @@
          * @param {Object} params Object to instantiate Ajax call
          * @param {string} params.method The HTTP method of the request
          * @param {string} params.url The URL being queried
-         * @param {responseCallback} params.callback Callback to process on response
-         * @param {errorCallback} [params.error] Callback to process on error
+         * @param {successCallback} params.success Callback to process on response
+         * @param {errorCallback} params.error Callback to process on error
          * @param {Object} [params.data] Data to process - required for POST and PUT
          * @param {string} [params.contentType=application/json] Content type header value for data being sent
          */
@@ -216,9 +240,9 @@
             // Process response
             xhr.onload = function() {
                 if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202) {
-                    params.callback(xhr.responseText);
+                    params.success(xhr.responseText);
                 } else {
-                    params.error(`Error: ${xhr.status}`)
+                    params.error(throw new HTTPError(`Error: ${xhr.status}`))
                 }
             }
             
@@ -231,6 +255,18 @@
                 xhr.send();
             }
         }
+         /** Success callback requirements for EasyHTTP.send()
+         * @callback sendSuccessCallback
+         * @param {string} responseText HTTP response text
+         */
+
+        /**
+         * Error callback requirements for EasyHTTP.send()
+         * 
+         * @callback sendErrorCallback
+         * @param {HTTPError} error 
+         */
+          
     }
 
     window.EasyHTTP = EasyHTTP;
