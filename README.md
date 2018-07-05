@@ -53,6 +53,6 @@ try {
 }
 ```
 
-See [here](https://github.com/jasonsbarr/easy-http-ajax/blob/ad45668dd06f308754ad5361da2f83b1ffed187a/src/easyhttpajax.js#L223-L234) for allowable params to .send()
+See [here](https://github.com/jasonsbarr/easy-http-ajax/blob/0e4183d0f0c5570a0687f6caeb6ad6ebc5a018f5/src/easyhttpajax.js#L203-L213) for allowable params to .send()
 
 Thanks to the [jQuery](https://jquery.com) team for the idea to pass params through a backend method.
